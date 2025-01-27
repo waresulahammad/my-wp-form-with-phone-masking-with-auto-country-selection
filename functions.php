@@ -53,13 +53,20 @@ function custom_contact_form() {
             utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js" // Util script for formatting
         });
 
-        // Form validation on submit
+        // Ensure full number (with country code) is submitted
         document.getElementById("contactForm").addEventListener("submit", (e) => {
-            const isValid = iti.isValidNumber();
-            if (!isValid) {
+            // Get the full phone number with country code
+            const fullNumber = iti.getNumber();
+
+            // If invalid, prevent submission and alert the user
+            if (!iti.isValidNumber()) {
                 e.preventDefault(); // Stop form submission
                 alert("Please enter a valid phone number.");
+                return;
             }
+
+            // Set the full phone number as the value of the phone input
+            phoneInput.value = fullNumber;
         });
     </script>
     <?php
@@ -76,7 +83,7 @@ function custom_contact_form() {
 function custom_handle_form_submission() {
     $name = sanitize_text_field($_POST['cf_name']);
     $email = sanitize_email($_POST['cf_email']);
-    $phone_number = sanitize_text_field($_POST['cf_phone']);
+    $phone_number = sanitize_text_field($_POST['cf_phone']); // Full phone number here
     $message = sanitize_textarea_field($_POST['cf_message']);
 
     // Additional server-side phone validation (as backup)
