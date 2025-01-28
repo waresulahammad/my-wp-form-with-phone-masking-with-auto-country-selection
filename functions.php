@@ -70,11 +70,17 @@ function custom_contact_form() {
             phoneInput.value = fullNumber;
         });
     </script>
-    <?php
 
+    <?php
     // Handle the form submission
     if (isset($_POST['cf_submitted'])) {
         custom_handle_form_submission();
+    }
+
+    // Check if the form was successfully submitted
+    if (isset($_GET['form_submitted']) && $_GET['form_submitted'] == 'true') {
+        // Show a success message
+        echo '<p style="color: green;">Message sent successfully.</p>';
     }
 
     return ob_get_clean(); // Output buffering ends here
@@ -100,7 +106,9 @@ function custom_handle_form_submission() {
     $email_body = "Name: $name<br>Email: $email<br>Phone: $phone_number<br>Message: $message";
 
     if (wp_mail($to, $subject, $email_body, $headers)) {
-        echo '<p style="color: green;">Message sent successfully.</p>';
+        // Redirect to the same page with a success parameter
+        wp_redirect(add_query_arg('form_submitted', 'true', $_SERVER['REQUEST_URI']));
+        exit;
     } else {
         echo '<p style="color: red;">Failed to send the message. Please try again later.</p>';
     }
