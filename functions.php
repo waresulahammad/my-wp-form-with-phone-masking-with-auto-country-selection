@@ -92,6 +92,7 @@ function custom_handle_form_submission() {
     $email = sanitize_email($_POST['cf_email']);
     $phone_number = sanitize_text_field($_POST['cf_phone']); // Full phone number here
     $message = sanitize_textarea_field($_POST['cf_message']);
+	$page_url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 
     // Additional server-side phone validation (as backup)
     if (!preg_match('/^\+[1-9][0-9]{6,14}$/', $phone_number)) {
@@ -103,7 +104,7 @@ function custom_handle_form_submission() {
     $subject = 'New Contact Form Submission';
     $headers = array('Content-Type: text/html; charset=UTF-8');
     
-    $email_body = "Name: $name<br>Email: $email<br>Phone: $phone_number<br>Message: $message";
+    $email_body = "Name: $name<br>Email: $email<br>Phone: $phone_number<br>Message: $message <br> Page URL: $page_url";
 
     if (wp_mail($to, $subject, $email_body, $headers)) {
         // Redirect to the same page with a success parameter
