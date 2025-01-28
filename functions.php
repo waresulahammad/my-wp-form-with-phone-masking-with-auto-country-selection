@@ -19,6 +19,7 @@ function custom_contact_form() {
                 id="phone" 
                 type="tel" 
                 name="cf_phone" 
+                maxlength="15"
                 required>
         </p>
         <p>
